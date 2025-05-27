@@ -4,17 +4,28 @@ import { RoomForm } from '@/components/RoomForm';
 import { Room } from '@/types/room';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Building, Users, MapPin, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Building, Users, MapPin, Settings, Trash2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
+  const { toast } = useToast();
 
   const handleRoomSubmit = (room: Room) => {
     setRooms(prev => [...prev, room]);
   };
 
+  const handleRemoveRoom = (roomId: string, roomName: string) => {
+    setRooms(prev => prev.filter(room => room.id !== roomId));
+    toast({
+      title: "Sala removida",
+      description: `A sala ${roomName} foi removida com sucesso.`,
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
       <RoomForm onSubmit={handleRoomSubmit} />
       
       {rooms.length > 0 && (
@@ -25,16 +36,26 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {rooms.map((room) => (
-              <Card key={room.id} className="shadow-lg border-0 bg-white hover:shadow-xl transition-shadow duration-200">
+              <Card key={room.id} className="shadow-lg border-0 bg-white hover:shadow-xl transition-shadow duration-200 relative">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between">
                     <span className="text-lg font-semibold text-gray-800">{room.nome}</span>
-                    <Badge 
-                      variant={room.disponibilidade === 'livre' ? 'default' : 'destructive'}
-                      className={room.disponibilidade === 'livre' ? 'bg-green-100 text-green-800' : ''}
-                    >
-                      {room.disponibilidade === 'livre' ? 'Livre' : 'Reservada'}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge 
+                        variant={room.disponibilidade === 'livre' ? 'default' : 'destructive'}
+                        className={room.disponibilidade === 'livre' ? 'bg-green-100 text-green-800' : ''}
+                      >
+                        {room.disponibilidade === 'livre' ? 'Livre' : 'Reservada'}
+                      </Badge>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleRemoveRoom(room.id!, room.nome)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">

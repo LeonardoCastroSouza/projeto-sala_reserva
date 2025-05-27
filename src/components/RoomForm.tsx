@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -83,7 +82,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent">
           Cadastro de Salas
         </h1>
         <p className="text-gray-600 mt-2">Gerencie as salas da sua instituição</p>
@@ -92,9 +91,9 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Informações Básicas */}
-          <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-blue-50">
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-orange-50">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-blue-700">
+              <CardTitle className="flex items-center gap-2 text-orange-700">
                 <Building className="w-5 h-5" />
                 Informações Básicas
               </CardTitle>
@@ -110,7 +109,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
                   value={formData.nome}
                   onChange={(e) => handleInputChange('nome', e.target.value)}
                   placeholder="Ex: Sala de Reuniões A1"
-                  className="mt-1"
+                  className="mt-1 focus:ring-orange-500 focus:border-orange-500"
                   required
                 />
               </div>
@@ -125,7 +124,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
                   value={formData.numero}
                   onChange={(e) => handleInputChange('numero', e.target.value)}
                   placeholder="Ex: 101, A-201"
-                  className="mt-1"
+                  className="mt-1 focus:ring-orange-500 focus:border-orange-500"
                   required
                 />
               </div>
@@ -141,16 +140,16 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
                   value={formData.espaco || ''}
                   onChange={(e) => handleInputChange('espaco', parseInt(e.target.value) || 0)}
                   placeholder="Ex: 30"
-                  className="mt-1"
+                  className="mt-1 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
             </CardContent>
           </Card>
 
           {/* Localização e Status */}
-          <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-green-50">
+          <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-orange-50">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-green-700">
+              <CardTitle className="flex items-center gap-2 text-orange-700">
                 <MapPin className="w-5 h-5" />
                 Localização e Status
               </CardTitle>
@@ -200,7 +199,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
               </div>
 
               <div className="flex items-center gap-2 p-3 bg-white rounded-lg border">
-                <Users className="w-4 h-4 text-blue-500" />
+                <Users className="w-4 h-4 text-orange-500" />
                 <span className="text-sm text-gray-600">
                   Capacidade: {formData.espaco || 0} pessoas
                 </span>
@@ -210,9 +209,9 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
         </div>
 
         {/* Descrição */}
-        <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-purple-50">
+        <Card className="shadow-lg border-0 bg-gradient-to-br from-white to-orange-50">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-purple-700">
+            <CardTitle className="flex items-center gap-2 text-orange-700">
               <Settings className="w-5 h-5" />
               Descrição e Observações
             </CardTitle>
@@ -227,7 +226,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
                 value={formData.descricao}
                 onChange={(e) => handleInputChange('descricao', e.target.value)}
                 placeholder="Descreva características especiais, restrições ou observações importantes sobre a sala..."
-                className="mt-1 min-h-[100px]"
+                className="mt-1 min-h-[100px] focus:ring-orange-500 focus:border-orange-500"
               />
             </div>
           </CardContent>
@@ -249,6 +248,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
                     id={recurso}
                     checked={formData.recursos.includes(recurso)}
                     onCheckedChange={() => handleRecursoToggle(recurso)}
+                    className="data-[state=checked]:bg-orange-600 data-[state=checked]:border-orange-600"
                   />
                   <Label
                     htmlFor={recurso}
@@ -265,7 +265,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
                 <p className="text-sm font-medium text-gray-700 mb-2">Recursos selecionados:</p>
                 <div className="flex flex-wrap gap-2">
                   {formData.recursos.map((recurso) => (
-                    <Badge key={recurso} variant="secondary" className="bg-blue-100 text-blue-800">
+                    <Badge key={recurso} variant="secondary" className="bg-orange-100 text-orange-800">
                       {recurso}
                     </Badge>
                   ))}
@@ -280,7 +280,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
           <Button
             type="submit"
             size="lg"
-            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
+            className="px-8 py-3 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
           >
             <Plus className="w-5 h-5 mr-2" />
             Cadastrar Sala
