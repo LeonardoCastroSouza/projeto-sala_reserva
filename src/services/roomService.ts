@@ -1,62 +1,134 @@
 
-import axios from 'axios';
 import { Room } from '@/types/room';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = '/api';
 
-// Configure axios defaults
-axios.defaults.baseURL = API_BASE_URL;
-axios.defaults.headers.common['Accept'] = 'application/json';
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-
-export const roomService = {
-  // Get all rooms
-  getAllRooms: async (): Promise<Room[]> => {
-    const response = await axios.get('/api/rooms');
-    return response.data;
-  },
-
-  // Get available rooms
-  getAvailableRooms: async (): Promise<Room[]> => {
-    const response = await axios.get('/api/rooms/available');
-    return response.data;
-  },
-
-  // Get reserved rooms
-  getReservedRooms: async (): Promise<Room[]> => {
-    const response = await axios.get('/api/rooms/reserved');
-    return response.data;
-  },
-
-  // Get rooms by sede
-  getRoomsBySede: async (sede: string): Promise<Room[]> => {
-    const response = await axios.get(`/api/rooms/sede/${sede}`);
-    return response.data;
-  },
-
-  // Create a new room
-  createRoom: async (room: Omit<Room, 'id'>): Promise<Room> => {
-    const response = await axios.post('/api/rooms', room);
-    return response.data.room;
-  },
-
-  // Update a room
-  updateRoom: async (id: string, updates: Partial<Room>): Promise<Room> => {
-    const response = await axios.put(`/api/rooms/${id}`, updates);
-    return response.data.room;
-  },
-
-  // Delete a room
-  deleteRoom: async (id: string): Promise<void> => {
-    await axios.delete(`/api/rooms/${id}`);
-  },
-
-  // Toggle room availability
-  toggleRoomReservation: async (id: string, currentStatus: string): Promise<Room> => {
-    const newStatus = currentStatus === 'livre' ? 'reservada' : 'livre';
-    const response = await axios.put(`/api/rooms/${id}`, {
-      disponibilidade: newStatus
+export class RoomService {
+  static async getAllRooms(): Promise<Room[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
     });
-    return response.data.room;
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
   }
-};
+
+  static async getRoomById(id: string): Promise<Room> {
+    const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  static async createRoom(room: Omit<Room, 'id'>): Promise<Room> {
+    const response = await fetch(`${API_BASE_URL}/rooms`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(room),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  static async updateRoom(id: string, room: Partial<Room>): Promise<Room> {
+    const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(room),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  static async deleteRoom(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  }
+
+  static async getRoomsBySede(sede: string): Promise<Room[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms/sede/${sede}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  static async getAvailableRooms(): Promise<Room[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms/available`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
+  static async getReservedRooms(): Promise<Room[]> {
+    const response = await fetch(`${API_BASE_URL}/rooms/reserved`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  }
+}

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Room } from "@/types/room";
 import { useToast } from "@/hooks/use-toast";
-import axios from 'axios';
 
 const Reservas = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -18,8 +17,20 @@ const Reservas = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await axios.get('/api/rooms');
-      setRooms(response.data);
+      const response = await fetch('/api/rooms', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setRooms(data);
     } catch (error) {
       console.error('Erro ao buscar salas:', error);
       toast({
@@ -36,9 +47,20 @@ const Reservas = () => {
     try {
       const newStatus = currentStatus === 'livre' ? 'reservada' : 'livre';
       
-      await axios.put(`/api/rooms/${roomId}`, {
-        disponibilidade: newStatus
+      const response = await fetch(`/api/rooms/${roomId}`, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          disponibilidade: newStatus
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       setRooms(rooms.map(room => 
         room.id === roomId 
