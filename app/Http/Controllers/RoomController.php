@@ -19,6 +19,33 @@ class RoomController extends Controller
     }
 
     /**
+     * Get rooms by sede
+     */
+    public function getBySede(string $sede): JsonResponse
+    {
+        $rooms = Room::bySede($sede)->get();
+        return response()->json($rooms);
+    }
+
+    /**
+     * Get available rooms
+     */
+    public function getAvailable(): JsonResponse
+    {
+        $rooms = Room::available()->get();
+        return response()->json($rooms);
+    }
+
+    /**
+     * Get reserved rooms
+     */
+    public function getReserved(): JsonResponse
+    {
+        $rooms = Room::reserved()->get();
+        return response()->json($rooms);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request): JsonResponse
