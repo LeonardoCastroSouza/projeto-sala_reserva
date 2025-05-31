@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2 } from "lucide-react";
 import { Room, RECURSOS_DISPONIVEIS, SEDES_DISPONIVEIS } from "@/types/room";
 import { useToast } from "@/hooks/use-toast";
+import { mockRoomService } from "@/services/mockRoomService";
 
 const Index = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -33,19 +34,9 @@ const Index = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await fetch('/api/rooms', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      console.log('Buscando salas...');
+      const data = await mockRoomService.getRooms();
+      console.log('Salas carregadas:', data);
       setRooms(data);
     } catch (error) {
       console.error('Erro ao buscar salas:', error);
@@ -72,26 +63,20 @@ const Index = () => {
     }
 
     try {
+      console.log('Cadastrando sala...', formData);
+      
       const roomData = {
-        ...formData,
+        nome: formData.nome,
+        numero: formData.numero,
         espaco: parseInt(formData.espaco),
-        disponibilidade: 'livre' // Sempre criada como livre por padrão
+        descricao: formData.descricao,
+        sede: formData.sede,
+        recursos: formData.recursos,
+        disponibilidade: 'livre' as const // Sempre criada como livre por padrão
       };
 
-      const response = await fetch('/api/rooms', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(roomData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
+      const result = await mockRoomService.createRoom(roomData);
+      console.log('Sala cadastrada:', result);
       
       toast({
         title: "Sucesso",
@@ -126,17 +111,8 @@ const Index = () => {
     }
 
     try {
-      const response = await fetch(`/api/rooms/${roomId}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      console.log('Excluindo sala:', roomId);
+      await mockRoomService.deleteRoom(roomId);
 
       toast({
         title: "Sucesso",
