@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -267,11 +266,6 @@ const Index = () => {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge 
-                          variant={room.disponibilidade === 'livre' ? 'default' : 'destructive'}
-                        >
-                          {room.disponibilidade === 'livre' ? 'Livre' : 'Reservada'}
-                        </Badge>
                         <Button
                           variant="outline"
                           size="sm"
