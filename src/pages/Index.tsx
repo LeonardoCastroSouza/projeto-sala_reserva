@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,14 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Trash2 } from "lucide-react";
+import { Trash2, Edit } from "lucide-react";
 import { Room, RECURSOS_DISPONIVEIS, SEDES_DISPONIVEIS } from "@/types/room";
 import { useToast } from "@/hooks/use-toast";
 import { mockRoomService } from "@/services/mockRoomService";
+import { EditRoomModal } from "@/components/EditRoomModal";
 
 const Index = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { toast } = useToast();
   
   // Form state
@@ -99,6 +103,32 @@ const Index = () => {
       toast({
         title: "Erro",
         description: "Erro ao cadastrar a sala.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEdit = (room: Room) => {
+    setEditingRoom(room);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSave = async (updatedRoom: Room) => {
+    try {
+      console.log('Atualizando sala...', updatedRoom);
+      await mockRoomService.updateRoom(updatedRoom.id!, updatedRoom);
+      
+      toast({
+        title: "Sucesso",
+        description: "Sala atualizada com sucesso!",
+      });
+
+      fetchRooms();
+    } catch (error) {
+      console.error('Erro ao atualizar sala:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao atualizar a sala.",
         variant: "destructive",
       });
     }
@@ -269,6 +299,13 @@ const Index = () => {
                         <Button
                           variant="outline"
                           size="sm"
+                          onClick={() => handleEdit(room)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={() => handleDelete(room.id!, room.nome)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -301,6 +338,17 @@ const Index = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de Edição */}
+      <EditRoomModal
+        room={editingRoom}
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingRoom(null);
+        }}
+        onSave={handleEditSave}
+      />
     </div>
   );
 };

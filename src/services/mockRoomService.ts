@@ -47,6 +47,20 @@ export const mockRoomService = {
     return newRoom;
   },
 
+  // Update a room
+  updateRoom: async (roomId: string, roomData: Partial<Room>): Promise<Room> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    const roomIndex = mockRooms.findIndex(room => room.id === roomId);
+    if (roomIndex === -1) {
+      throw new Error('Sala não encontrada');
+    }
+    
+    mockRooms[roomIndex] = { ...mockRooms[roomIndex], ...roomData };
+    return mockRooms[roomIndex];
+  },
+
   // Delete a room
   deleteRoom: async (roomId: string): Promise<void> => {
     // Simulate API delay
