@@ -20,6 +20,11 @@ const menuItems = [
     icon: Home,
   },
   {
+    title: "Listar Salas",
+    url: "/salas",
+    icon: List,
+  },
+  {
     title: "Reservas",
     url: "/reservas",
     icon: Calendar,
