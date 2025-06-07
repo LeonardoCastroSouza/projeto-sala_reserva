@@ -1,5 +1,5 @@
 
-import { Calendar, Home, List } from "lucide-react";
+import { Home, List } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -23,11 +23,6 @@ const menuItems = [
     title: "Listar Salas",
     url: "/salas",
     icon: List,
-  },
-  {
-    title: "Reservas",
-    url: "/reservas",
-    icon: Calendar,
   },
 ];
 
