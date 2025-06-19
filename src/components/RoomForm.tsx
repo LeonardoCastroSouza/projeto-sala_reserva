@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,9 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Room, RECURSOS_DISPONIVEIS, SEDES_DISPONIVEIS } from '@/types/room';
+import { Room, SEDES_DISPONIVEIS } from '@/types/room';
 import { MapPin, Users, Building, Settings, CheckCircle, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useResourceManager } from '@/hooks/useResourceManager';
 
 interface RoomFormProps {
   onSubmit: (room: Room) => void;
@@ -17,6 +19,7 @@ interface RoomFormProps {
 
 export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
   const { toast } = useToast();
+  const { recursos } = useResourceManager();
   const [formData, setFormData] = useState<Omit<Room, 'id'>>({
     nome: '',
     numero: '',
@@ -242,7 +245,7 @@ export const RoomForm: React.FC<RoomFormProps> = ({ onSubmit }) => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {RECURSOS_DISPONIVEIS.map((recurso) => (
+              {recursos.map((recurso) => (
                 <div key={recurso} className="flex items-center space-x-2">
                   <Checkbox
                     id={recurso}

@@ -7,12 +7,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Room, RECURSOS_DISPONIVEIS, SEDES_DISPONIVEIS } from "@/types/room";
+import { Room, SEDES_DISPONIVEIS } from "@/types/room";
 import { useToast } from "@/hooks/use-toast";
 import { mockRoomService } from "@/services/mockRoomService";
+import { ResourceManagerModal } from "@/components/ResourceManagerModal";
+import { useResourceManager } from "@/hooks/useResourceManager";
+import { Settings } from "lucide-react";
 
 const Index = () => {
   const { toast } = useToast();
+  const { recursos, updateRecursos } = useResourceManager();
+  const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -91,10 +96,22 @@ const Index = () => {
       {/* Formulário de Cadastro */}
       <Card>
         <CardHeader>
-          <CardTitle>Cadastrar Nova Sala</CardTitle>
-          <CardDescription>
-            Preencha os dados para cadastrar uma nova sala
-          </CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Cadastrar Nova Sala</CardTitle>
+              <CardDescription>
+                Preencha os dados para cadastrar uma nova sala
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setIsResourceModalOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <Settings className="w-4 h-4" />
+              Gerenciar Recursos
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -162,7 +179,7 @@ const Index = () => {
             <div>
               <Label>Recursos Disponíveis</Label>
               <div className="grid grid-cols-2 gap-2 mt-2">
-                {RECURSOS_DISPONIVEIS.map((recurso) => (
+                {recursos.map((recurso) => (
                   <div key={recurso} className="flex items-center space-x-2">
                     <Checkbox
                       id={recurso}
@@ -183,6 +200,14 @@ const Index = () => {
           </form>
         </CardContent>
       </Card>
+
+      {/* Modal de Gerenciamento de Recursos */}
+      <ResourceManagerModal
+        isOpen={isResourceModalOpen}
+        onClose={() => setIsResourceModalOpen(false)}
+        recursos={recursos}
+        onUpdateRecursos={updateRecursos}
+      />
     </div>
   );
 };

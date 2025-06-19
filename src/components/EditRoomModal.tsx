@@ -8,8 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Room, RECURSOS_DISPONIVEIS, SEDES_DISPONIVEIS } from '@/types/room';
+import { Room, SEDES_DISPONIVEIS } from '@/types/room';
 import { useToast } from '@/hooks/use-toast';
+import { useResourceManager } from '@/hooks/useResourceManager';
 
 interface EditRoomModalProps {
   room: Room | null;
@@ -25,6 +26,7 @@ export const EditRoomModal: React.FC<EditRoomModalProps> = ({
   onSave
 }) => {
   const { toast } = useToast();
+  const { recursos } = useResourceManager();
   const [formData, setFormData] = useState({
     nome: '',
     numero: '',
@@ -158,7 +160,7 @@ export const EditRoomModal: React.FC<EditRoomModalProps> = ({
           <div>
             <Label>Recursos Disponíveis</Label>
             <div className="grid grid-cols-2 gap-2 mt-2">
-              {RECURSOS_DISPONIVEIS.map((recurso) => (
+              {recursos.map((recurso) => (
                 <div key={recurso} className="flex items-center space-x-2">
                   <Checkbox
                     id={`edit-${recurso}`}
