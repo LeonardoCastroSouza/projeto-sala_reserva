@@ -95,14 +95,14 @@ const Reservas = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Reservas de Salas</h1>
         <p className="text-gray-600 mt-2">
-          Gerencie as reservas das salas cadastradas
+          Gerencie as reservas realizadas
         </p>
       </div>
 
       {rooms.length === 0 ? (
         <Card>
           <CardContent className="p-6 text-center">
-            <p className="text-gray-500">Nenhuma sala cadastrada ainda.</p>
+            <p className="text-gray-500">Nenhuma reserva foi encontrada .</p>
           </CardContent>
         </Card>
       ) : (
