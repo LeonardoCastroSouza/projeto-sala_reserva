@@ -1,55 +1,77 @@
 
-import { Home, List } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+"use client"
+
+import { Calendar, Settings, Building, UserCircle, LogOut } from "lucide-react"
+import { NavLink, useLocation } from "react-router-dom"
+
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
+  useSidebar,
+} from "@/components/ui/sidebar"
+import { useAuth } from "@/contexts/AuthContext"
 
-const menuItems = [
+// Menu items
+const items = [
   {
-    title: "Cadastro de Salas",
+    title: "Cadastrar Sala",
     url: "/",
-    icon: Home,
+    icon: Settings,
   },
   {
-    title: "Listar Salas",
+    title: "Salas Cadastradas",
     url: "/salas",
-    icon: List,
+    icon: Building,
   },
-];
+  {
+    title: "Reservas",
+    url: "/reservas",
+    icon: Calendar,
+  },
+]
 
 export function AppSidebar() {
-  const location = useLocation();
+  const { collapsed } = useSidebar()
+  const location = useLocation()
+  const { logout, user } = useAuth()
+  const currentPath = location.pathname
 
   return (
-    <Sidebar>
-      <SidebarHeader className="p-4">
-        <h2 className="text-lg font-semibold">Sistema de Reservas</h2>
-        <p className="text-sm text-muted-foreground">Gestão de Salas</p>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-4 py-2">
+          <Building className="h-6 w-6 text-orange-600" />
+          {!collapsed && (
+            <h1 className="text-lg font-semibold text-orange-600">
+              Sistema de Salas
+            </h1>
+          )}
+        </div>
       </SidebarHeader>
+      
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navegação</SidebarGroupLabel>
+          <SidebarGroupLabel>Gerenciamento</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton 
                     asChild
-                    isActive={location.pathname === item.url}
+                    isActive={currentPath === item.url}
                   >
-                    <Link to={item.url}>
+                    <NavLink to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </Link>
+                    </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -57,6 +79,23 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <UserCircle />
+              <span className="truncate">{user?.name || 'Usuário'}</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={logout}>
+              <LogOut />
+              <span>Sair</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
-  );
+  )
 }

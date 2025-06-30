@@ -12,12 +12,14 @@ import { useToast } from "@/hooks/use-toast";
 import { mockRoomService } from "@/services/mockRoomService";
 import { ResourceManagerModal } from "@/components/ResourceManagerModal";
 import { useResourceManager } from "@/hooks/useResourceManager";
+import { Dashboard } from "@/components/Dashboard";
 import { Settings } from "lucide-react";
 
 const Index = () => {
   const { toast } = useToast();
   const { recursos, updateRecursos } = useResourceManager();
   const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
+  const [refreshDashboard, setRefreshDashboard] = useState(0);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -51,7 +53,7 @@ const Index = () => {
         descricao: formData.descricao,
         sede: formData.sede,
         recursos: formData.recursos,
-        disponibilidade: 'livre' as const // Sempre criada como livre por padrão
+        disponibilidade: 'livre' as const
       };
 
       const result = await mockRoomService.createRoom(roomData);
@@ -71,6 +73,9 @@ const Index = () => {
         sede: '',
         recursos: []
       });
+
+      // Refresh dashboard
+      setRefreshDashboard(prev => prev + 1);
 
     } catch (error) {
       console.error('Erro ao cadastrar sala:', error);
@@ -92,7 +97,12 @@ const Index = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      {/* Dashboard */}
+      <div key={refreshDashboard}>
+        <Dashboard />
+      </div>
+
       {/* Formulário de Cadastro */}
       <Card>
         <CardHeader>

@@ -9,6 +9,7 @@ import { LoginScreen } from "./components/LoginScreen";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Salas from "./pages/Salas";
+import Reservas from "./pages/Reservas";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/salas" element={<Salas />} />
+        <Route path="/reservas" element={<Reservas />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
