@@ -39,17 +39,18 @@ const items = [
 ]
 
 export function AppSidebar() {
-  const { collapsed } = useSidebar()
+  const { state } = useSidebar()
   const location = useLocation()
   const { logout, user } = useAuth()
   const currentPath = location.pathname
+  const isCollapsed = state === "collapsed"
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-4 py-2">
           <Building className="h-6 w-6 text-orange-600" />
-          {!collapsed && (
+          {!isCollapsed && (
             <h1 className="text-lg font-semibold text-orange-600">
               Sistema de Salas
             </h1>
@@ -85,7 +86,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton>
               <UserCircle />
-              <span className="truncate">{user?.name || 'Usuário'}</span>
+              <span className="truncate">{user?.email || 'Usuário'}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
