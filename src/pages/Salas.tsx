@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit, Search } from "lucide-react";
 import { Room } from "@/types/room";
 import { useToast } from "@/hooks/use-toast";
-import { mockRoomService } from "@/services/mockRoomService";
+import { roomService } from "@/services/roomService";
 import { EditRoomModal } from "@/components/EditRoomModal";
 
 const Salas = () => {
@@ -29,15 +28,15 @@ const Salas = () => {
 
   const fetchRooms = async () => {
     try {
-      console.log('Buscando salas...');
-      const data = await mockRoomService.getRooms();
+      console.log('Buscando salas da API...');
+      const data = await roomService.getRooms();
       console.log('Salas carregadas:', data);
       setRooms(data);
     } catch (error) {
       console.error('Erro ao buscar salas:', error);
       toast({
         title: "Erro",
-        description: "Erro ao carregar as salas.",
+        description: "Erro ao carregar as salas. Verifique se o backend está rodando.",
         variant: "destructive",
       });
     } finally {
@@ -68,7 +67,7 @@ const Salas = () => {
   const handleEditSave = async (updatedRoom: Room) => {
     try {
       console.log('Atualizando sala...', updatedRoom);
-      await mockRoomService.updateRoom(updatedRoom.id!, updatedRoom);
+      await roomService.updateRoom(updatedRoom.id!, updatedRoom);
       
       toast({
         title: "Sucesso",
@@ -80,7 +79,7 @@ const Salas = () => {
       console.error('Erro ao atualizar sala:', error);
       toast({
         title: "Erro",
-        description: "Erro ao atualizar a sala.",
+        description: "Erro ao atualizar a sala. Verifique se o backend está rodando.",
         variant: "destructive",
       });
     }
@@ -93,7 +92,7 @@ const Salas = () => {
 
     try {
       console.log('Excluindo sala:', roomId);
-      await mockRoomService.deleteRoom(roomId);
+      await roomService.deleteRoom(roomId);
 
       toast({
         title: "Sucesso",
@@ -105,7 +104,7 @@ const Salas = () => {
       console.error('Erro ao excluir sala:', error);
       toast({
         title: "Erro",
-        description: "Erro ao excluir a sala.",
+        description: "Erro ao excluir a sala. Verifique se o backend está rodando.",
         variant: "destructive",
       });
     }

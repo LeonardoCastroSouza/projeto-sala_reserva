@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Room } from "@/types/room";
 import { useToast } from "@/hooks/use-toast";
+import { roomService } from "@/services/roomService";
 
 const Reservas = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -17,25 +17,15 @@ const Reservas = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await fetch('/api/rooms', {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      console.log('Carregando salas da API...');
+      const data = await roomService.getRooms();
+      console.log('Salas carregadas:', data);
       setRooms(data);
     } catch (error) {
       console.error('Erro ao buscar salas:', error);
       toast({
         title: "Erro",
-        description: "Erro ao carregar as salas.",
+        description: "Erro ao carregar as salas. Verifique se o backend está rodando.",
         variant: "destructive",
       });
     } finally {
@@ -47,20 +37,10 @@ const Reservas = () => {
     try {
       const newStatus = currentStatus === 'livre' ? 'reservada' : 'livre';
       
-      const response = await fetch(`/api/rooms/${roomId}`, {
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          disponibilidade: newStatus
-        }),
+      console.log(`Atualizando status da sala ${roomId} para ${newStatus}`);
+      await roomService.updateRoom(roomId, {
+        disponibilidade: newStatus
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
 
       setRooms(rooms.map(room => 
         room.id === roomId 
@@ -76,7 +56,7 @@ const Reservas = () => {
       console.error('Erro ao atualizar reserva:', error);
       toast({
         title: "Erro",
-        description: "Erro ao atualizar a reserva da sala.",
+        description: "Erro ao atualizar a reserva da sala. Verifique se o backend está rodando.",
         variant: "destructive",
       });
     }

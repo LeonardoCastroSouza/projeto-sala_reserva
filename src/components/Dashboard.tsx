@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building, Calendar, Users, CheckCircle } from "lucide-react";
-import { mockRoomService } from "@/services/mockRoomService";
+import { roomService } from "@/services/roomService";
 import { Room } from "@/types/room";
 
 export const Dashboard: React.FC = () => {
@@ -16,7 +16,9 @@ export const Dashboard: React.FC = () => {
 
   const fetchRooms = async () => {
     try {
-      const data = await mockRoomService.getRooms();
+      console.log('Carregando salas da API...');
+      const data = await roomService.getRooms();
+      console.log('Salas carregadas:', data);
       setRooms(data);
     } catch (error) {
       console.error('Erro ao buscar salas:', error);

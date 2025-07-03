@@ -1,134 +1,184 @@
 
-import { Room } from '@/types/room';
+import { Room } from "@/types/room";
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = 'http://localhost:8000/api';
 
-export class RoomService {
-  static async getAllRooms(): Promise<Room[]> {
-    const response = await fetch(`${API_BASE_URL}/rooms`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+export const roomService = {
+  // Get all rooms
+  getRooms: async (): Promise<Room[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((room: any) => ({
+        ...room,
+        recursos: Array.isArray(room.recursos) ? room.recursos : JSON.parse(room.recursos || '[]')
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar salas:', error);
+      throw error;
     }
+  },
 
-    return response.json();
-  }
+  // Create a new room
+  createRoom: async (roomData: Omit<Room, 'id'>): Promise<Room> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(roomData),
+      });
 
-  static async getRoomById(id: string): Promise<Room> {
-    const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await response.json();
+      return {
+        ...result.room,
+        recursos: Array.isArray(result.room.recursos) ? result.room.recursos : JSON.parse(result.room.recursos || '[]')
+      };
+    } catch (error) {
+      console.error('Erro ao criar sala:', error);
+      throw error;
     }
+  },
 
-    return response.json();
-  }
+  // Update a room
+  updateRoom: async (roomId: string, roomData: Partial<Room>): Promise<Room> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(roomData),
+      });
 
-  static async createRoom(room: Omit<Room, 'id'>): Promise<Room> {
-    const response = await fetch(`${API_BASE_URL}/rooms`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(room),
-    });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const result = await response.json();
+      return {
+        ...result.room,
+        recursos: Array.isArray(result.room.recursos) ? result.room.recursos : JSON.parse(result.room.recursos || '[]')
+      };
+    } catch (error) {
+      console.error('Erro ao atualizar sala:', error);
+      throw error;
     }
+  },
 
-    return response.json();
-  }
+  // Delete a room
+  deleteRoom: async (roomId: string): Promise<void> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
 
-  static async updateRoom(id: string, room: Partial<Room>): Promise<Room> {
-    const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(room),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Erro ao excluir sala:', error);
+      throw error;
     }
+  },
 
-    return response.json();
-  }
+  // Get rooms by sede
+  getRoomsBySede: async (sede: string): Promise<Room[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms/sede/${encodeURIComponent(sede)}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
 
-  static async deleteRoom(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/rooms/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      return data.map((room: any) => ({
+        ...room,
+        recursos: Array.isArray(room.recursos) ? room.recursos : JSON.parse(room.recursos || '[]')
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar salas por sede:', error);
+      throw error;
+    }
+  },
+
+  // Get available rooms
+  getAvailableRooms: async (): Promise<Room[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms/available`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((room: any) => ({
+        ...room,
+        recursos: Array.isArray(room.recursos) ? room.recursos : JSON.parse(room.recursos || '[]')
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar salas disponíveis:', error);
+      throw error;
+    }
+  },
+
+  // Get reserved rooms
+  getReservedRooms: async (): Promise<Room[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/rooms/reserved`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.map((room: any) => ({
+        ...room,
+        recursos: Array.isArray(room.recursos) ? room.recursos : JSON.parse(room.recursos || '[]')
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar salas reservadas:', error);
+      throw error;
     }
   }
-
-  static async getRoomsBySede(sede: string): Promise<Room[]> {
-    const response = await fetch(`${API_BASE_URL}/rooms/sede/${sede}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  static async getAvailableRooms(): Promise<Room[]> {
-    const response = await fetch(`${API_BASE_URL}/rooms/available`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  }
-
-  static async getReservedRooms(): Promise<Room[]> {
-    const response = await fetch(`${API_BASE_URL}/rooms/reserved`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  }
-}
+};
